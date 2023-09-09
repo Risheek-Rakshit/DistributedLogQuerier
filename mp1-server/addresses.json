@@ -1,0 +1,10 @@
+[
+    {
+        "machine": "fa23-cs425-5801.cs.illinois.edu",
+        "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5802.cs.illinois.edu",
+        "port": 4040
+    }
+]
