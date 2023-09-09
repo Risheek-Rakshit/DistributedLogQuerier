@@ -9,6 +9,7 @@ type Config struct{
 	Port			string		`yaml:"port"`
 	AddressPath		string		`yaml:"addresspath"`
 	TimeOut			int			`yaml:"timeout"`
+	LogPath			string		`yaml:"logpath"`
 }
 
 func NewConfig(logger *logger.CustomLogger) *Config{

@@ -6,5 +6,37 @@
     {
         "machine": "fa23-cs425-5802.cs.illinois.edu",
         "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5803.cs.illinois.edu",
+        "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5804.cs.illinois.edu",
+        "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5805.cs.illinois.edu",
+        "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5806.cs.illinois.edu",
+        "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5807.cs.illinois.edu",
+        "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5808.cs.illinois.edu",
+        "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5809.cs.illinois.edu",
+        "port": 4040
+    },
+    {
+        "machine": "fa23-cs425-5810.cs.illinois.edu",
+        "port": 4040
     }
 ]

@@ -1,0 +1,10 @@
+[
+    {
+        "machine": "google.com",
+        "port": 4040
+    },
+    {
+        "machine": "facebook.com",
+        "port": 4040
+    }
+]

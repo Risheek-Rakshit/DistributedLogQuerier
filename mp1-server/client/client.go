@@ -14,34 +14,33 @@ import (
 	"time"
 )
 
-func PerformCombinedGrep(input string, logger *logger.CustomLogger,config *config.Config){
-		addresses := utils.AddressParser(logger, config)
+func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.CustomLogger,config *config.Config) (string, int, int64){
+		
+	var wg sync.WaitGroup
+	wg.Add(len(addresses))
 
-		for _, address := range addresses {
-			logger.Debug(string(address.IP))
-			logger.Debug(strconv.Itoa(address.Port))
-			
-		}
-		var wg sync.WaitGroup
-		wg.Add(len(addresses))
+	channel := make(chan utils.Results)
+	for index, address := range addresses {
+		go connectionHandler(index, address, &wg, input, channel, logger, config)
+	}
 
-		channel := make(chan utils.Results)
-		for index, address := range addresses {
-			go connectionHandler(index, address, &wg, input, channel, logger, config)
-		}
+	go func() {
+		wg.Wait()
+		close(channel)
+	}()
 
-		go func() {
-			wg.Wait()
-			close(channel)
-		}()
+	endTime := time.Now().UnixMilli()
+	totLine := 0
+	resp := ""
+	for message := range channel {
+		fmt.Println("Message from server i: ",message.NumMach)
+		fmt.Println(message.Lines)
+		totLine += message.LineCount
+		resp = resp + message.Lines +"\n"
+	}
+	fmt.Println("Total Line matched:", totLine)
 
-		totLine := 0
-		for message := range channel {
-			fmt.Println("Message from server i: ",message.NumMach)
-			fmt.Println(message.Lines)
-			totLine += message.LineCount
-		}
-		fmt.Println("Total Line matched:", totLine)
+	return resp, totLine, endTime
 }
 
 func ClientImplNew(logger *logger.CustomLogger,config *config.Config){
@@ -53,14 +52,27 @@ func ClientImplNew(logger *logger.CustomLogger,config *config.Config){
 		if scanner.Scan() {
     		line = scanner.Text()
 		}
+
+		startTime := time.Now().UnixMilli()
+		addresses := utils.AddressParser(logger, config)
+
+		for _, address := range addresses {
+			logger.Debug(string(address.IP))
+			logger.Debug(strconv.Itoa(address.Port))
+			
+		}
 		
-		PerformCombinedGrep(line, logger, config)
+		_,_, endTime := PerformCombinedGrep(addresses, line, logger, config)
+
+		latency := endTime - startTime
+		fmt.Println("Time taken for the query (in ms): ",latency)
+
 	}
 	
 }
 
 func connectionHandler(machNumber int, addr net.TCPAddr, wg *sync.WaitGroup, pattern string, ch chan utils.Results, logger *logger.CustomLogger, config *config.Config) {
-	logFile := "machine." + strconv.Itoa(machNumber) + ".log"
+	logFile := config.LogPath + "/machine." + strconv.Itoa(machNumber) + ".log"
 	logger.Info("Contacting machine:" + strconv.Itoa(machNumber))
 	address := addr.IP.String() + ":" + strconv.Itoa(addr.Port)
 	conn, err := net.Dial("tcp", address)
