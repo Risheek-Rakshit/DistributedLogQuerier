@@ -3,6 +3,7 @@ package main
 import (
 	"net"
 	"fmt"
+	"flag"
 
 	"encoding/gob"
 
@@ -45,9 +46,23 @@ func handleConnection(conn net.Conn, logger *logger.CustomLogger){
 func main(){
 	
 	//TODO: set log level from args
-	Logger := logger.NewLogger()
+	help := flag.Bool("h", false, "help")
+
+	logLevel := "info"
+	mode := 0
+	flag.StringVar(&logLevel,"loglev","info","Set log level: can be debug, info, error. Any other value returns info, set to info by default")
+	flag.IntVar(&mode, "mode", 0, "sets the mode to use: 0 is default mode, 1 is testing mode, where all tests are performed first")
+	flag.Parse()
+
+	if *help {
+		flag.Usage()
+		return
+	}
+
+	
+	Logger := logger.NewLogger(logLevel)
 	config := config.NewConfig(Logger)
-	Logger.Info("Welcome to CS425 MP1")
+	Logger.Info("Welcome to CS425 MP1: "+logLevel)
 
 
 	listner, err := net.Listen("tcp", "0.0.0.0:" + config.Port)

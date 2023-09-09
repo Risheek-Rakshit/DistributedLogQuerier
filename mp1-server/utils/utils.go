@@ -16,6 +16,13 @@ type MachineDetails struct {
 	PortNumber  int    `json:"port"`
 }
 
+type Mode int64
+const (
+	DEFAULT Mode = iota
+	TEST
+)
+
+
 type Payload struct {
 	Name    string
 	Pattern string
@@ -77,7 +84,7 @@ func GrepFileNew(filePath string, cmd string, logger *logger.CustomLogger) (stri
 
 	lines := strings.Split(outputLines, "\n")
 
-	numLines := len(lines)
+	numLines := len(lines) - 1
 
 	result := outputLines
 

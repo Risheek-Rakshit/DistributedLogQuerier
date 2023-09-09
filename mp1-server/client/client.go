@@ -65,14 +65,16 @@ func connectionHandler(machNumber int, addr net.TCPAddr, wg *sync.WaitGroup, pat
 	address := addr.IP.String() + ":" + strconv.Itoa(addr.Port)
 	conn, err := net.Dial("tcp", address)
 
-	defer conn.Close()
+	
 	defer wg.Done()
 
-
 	if err != nil {
-		logger.Error("Error in contacting the Machine:"+ strconv.Itoa(machNumber), err)
+		logger.Error("Error in contacting the Machine: "+ strconv.Itoa(machNumber), err)
 		return
 	}
+
+	defer conn.Close()
+	
 
 	payload := utils.Payload{Name:logFile,Pattern: pattern}
 	logger.Info("Message writing")
@@ -90,7 +92,7 @@ func connectionHandler(machNumber int, addr net.TCPAddr, wg *sync.WaitGroup, pat
 	p := &utils.Results{}
 	err = dec.Decode(p)
 	if err!= nil {
-		logger.Error("Error decoding message:", err)
+		logger.Error("Error decoding message: ", err)
 		return
 	}
 	p.NumMach = machNumber

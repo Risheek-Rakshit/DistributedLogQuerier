@@ -6,11 +6,23 @@ type CustomLogger struct{
 	cLogger *log.Logger
 }
 
-func NewLogger() *CustomLogger{
+func NewLogger(level string) *CustomLogger{
+	
 	logger := log.New()
 	logger.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 	})
+
+	if level == "debug" {
+		logger.SetLevel(log.DebugLevel)
+	} else if level == "error" {
+		logger.SetLevel(log.ErrorLevel)
+	} else if level == "warn" {
+		logger.SetLevel(log.WarnLevel)
+	} else {
+		logger.SetLevel(log.InfoLevel)
+	}
+
 	return &CustomLogger{logger}
 }
 
