@@ -36,7 +36,7 @@ func TestCombinedGrepRare(Logger *logger.CustomLogger, config *config.Config){
 	for _, r := range result {
 		resp = resp + r.Lines
 	}
-	file, err := os.ReadFile("testOutput/rare.txt")
+	file, err := os.ReadFile("client/testOutput/rare.txt")
 	if err != nil {
 		Logger.Error("No file, Please download file. Error opening file: ", err)
 		return
@@ -73,7 +73,7 @@ func TestCombinedGrepFrequent(Logger *logger.CustomLogger, config *config.Config
 	for _, r := range result {
 		resp = resp + r.Lines
 	}
-	file, err := os.ReadFile("testOutput/frequentNew.txt")
+	file, err := os.ReadFile("client/testOutput/frequentNew.txt")
 	if err != nil {
 		Logger.Error("No file, Please download file. Error opening file: ", err)
 		return
@@ -111,7 +111,7 @@ func TestCombinedGrepSomewhatFreq(Logger *logger.CustomLogger, config *config.Co
 	for _, r := range result {
 		resp = resp + r.Lines
 	}
-	file, err := os.ReadFile("testOutput/somewhatfrequentNew.txt")
+	file, err := os.ReadFile("client/testOutput/somewhatfrequentNew.txt")
 	if err != nil {
 		Logger.Error("No file, Please download file. Error opening file: ", err)
 	}
@@ -196,7 +196,7 @@ func TestCombinedGrepCount(Logger *logger.CustomLogger, config *config.Config){
 func TestCombinedGrepRegex(Logger *logger.CustomLogger, config *config.Config){
 	
 	addresses := utils.AddressParser(Logger, config)
-	command := "grep \"(DELETE|PUT)\\b\""
+	command := "grep -E \"(DELETE|PUT)\\b\""
 
 	Logger.Info("Distributed Testing a regex pattern, command is: " + command)
 
@@ -211,12 +211,12 @@ func TestCombinedGrepRegex(Logger *logger.CustomLogger, config *config.Config){
 	for _, r := range result {
 		resp = resp + r.Lines
 	}
-	file, err := os.ReadFile("testOutput/regex.txt")
+	file, err := os.ReadFile("client/testOutput/regex.txt")
 	if err != nil {
 		Logger.Error("No file, Please download file. Error opening file: ", err)
 	}
 	expResult := string(file)
-	expNumLines := 337979
+	expNumLines := 812631
 
 	if strings.TrimRight(resp,"\r\n") != strings.TrimRight(expResult,"\r\n") || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
