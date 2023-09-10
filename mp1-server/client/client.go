@@ -14,6 +14,11 @@ import (
 	"time"
 )
 
+/*
+	Sending grep requests to the machines.
+	Prints the grep responses as received
+	Returns grep responses as results arrays, total lines mached and the absolute end time when query was served
+*/
 func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.CustomLogger,config *config.Config) ([]utils.Results, int, int64){
 		
 	var wg sync.WaitGroup
@@ -51,10 +56,21 @@ func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.C
 	return respArr, totLine, endTime
 }
 
+/*
+	Run as a goroutine
+	Gives user option to either enter command, or perform Tests as per config/clientTester.go
+	Test inputs (type this when prompted to perform the individual tests)- 
+	0: Grep on a rare pattern
+	1: Grep on a frequent pattern
+	2: Grep on a somewhat frequent pattern
+	3: Grep on a pattern present on only 1 machine
+	4: Grep with -c option
+	5: Grep on a regex
+*/
 func ClientImplNewTest(logger *logger.CustomLogger,config *config.Config){
 	for {
 		
-		fmt.Println("Enter your grep command, or Test option(0-4) [Refer to the README about what each test option performs]:")
+		fmt.Println("Enter your grep command, or Test option(0-5) [Refer to the README about what each test option performs]:")
 		scanner := bufio.NewScanner(os.Stdin)
 		line := ""
 		if scanner.Scan() {
@@ -72,6 +88,8 @@ func ClientImplNewTest(logger *logger.CustomLogger,config *config.Config){
 			TestCombinedGrepSingle(logger, config)
 		case "4":
 			TestCombinedGrepCount(logger, config)
+		case "5":
+			TestCombinedGrepRegex(logger, config)
 		default:
 			startTime := time.Now().UnixMilli()
 			addresses := utils.AddressParser(logger, config)
@@ -89,6 +107,10 @@ func ClientImplNewTest(logger *logger.CustomLogger,config *config.Config){
 	}
 }
 
+/*
+	Run as a goroutine
+	takes grep command as a user input, and calls PerformCommbinedGrep. Displays the total time taken by the query
+*/
 func ClientImplNew(logger *logger.CustomLogger,config *config.Config){
 	for {
 		
@@ -117,6 +139,10 @@ func ClientImplNew(logger *logger.CustomLogger,config *config.Config){
 	
 }
 
+/*
+	performs connections to a machine with addr IPv4 address, to send a grep request, and receive for the response.
+	store the response in a channel ch
+*/
 func connectionHandler(machNumber int, addr net.TCPAddr, wg *sync.WaitGroup, pattern string, ch chan utils.Results, logger *logger.CustomLogger, config *config.Config) {
 	machNumber 	= machNumber + 1
 	logFile := config.LogPath + "/machine." + strconv.Itoa(machNumber) + ".log"

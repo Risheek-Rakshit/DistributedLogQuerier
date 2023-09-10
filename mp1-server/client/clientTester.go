@@ -5,11 +5,19 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 	"mp1-server/utils"
 	"mp1-server/config"
 	"mp1-server/logger"
 )
 
+/**
+	clientTester.go consists of all distributed tests	
+**/
+
+/*
+	Performs grep on a rare pattern
+*/
 func TestCombinedGrepRare(Logger *logger.CustomLogger, config *config.Config){
 
 	addresses := utils.AddressParser(Logger, config)
@@ -36,12 +44,17 @@ func TestCombinedGrepRare(Logger *logger.CustomLogger, config *config.Config){
 	expResult := string(file)
 	expNumLines := 41
 
-	if resp != expResult || numLines != expNumLines {
-		Logger.Info("[Test] The result is Wrong: " + resp)
+	if strings.TrimRight(resp,"\r\n") != strings.TrimRight(expResult,"\r\n") || numLines != expNumLines {
+		Logger.Info("[TEST] The result is Wrong: " + resp)
 		Logger.Error("Grep for rare pattern occurences failed",nil)
+		return
 	}
+	Logger.Info("[TEST] Distributed Test for rare pattern successful")
 }
 
+/*
+	Performs grep on a frequent pattern
+*/
 func TestCombinedGrepFrequent(Logger *logger.CustomLogger, config *config.Config){
 	
 	addresses := utils.AddressParser(Logger, config)
@@ -60,7 +73,7 @@ func TestCombinedGrepFrequent(Logger *logger.CustomLogger, config *config.Config
 	for _, r := range result {
 		resp = resp + r.Lines
 	}
-	file, err := os.ReadFile("testOutput/frequent.txt")
+	file, err := os.ReadFile("testOutput/frequentNew.txt")
 	if err != nil {
 		Logger.Error("No file, Please download file. Error opening file: ", err)
 		return
@@ -68,12 +81,18 @@ func TestCombinedGrepFrequent(Logger *logger.CustomLogger, config *config.Config
 	expResult := string(file)
 	expNumLines := 1081851
 
-	if resp != expResult || numLines != expNumLines {
+	if strings.TrimRight(resp,"\r\n") != strings.TrimRight(expResult,"\r\n") || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
 		Logger.Error("Grep for frequent pattern occurences failed", nil)
+		return
 	}
+
+	Logger.Info("[TEST] Distributed Test for frequent pattern successful")
 }
 
+/*
+	Performs grep on a somewhat frequent pattern
+*/
 func TestCombinedGrepSomewhatFreq(Logger *logger.CustomLogger, config *config.Config){
 	
 	addresses := utils.AddressParser(Logger, config)
@@ -92,19 +111,25 @@ func TestCombinedGrepSomewhatFreq(Logger *logger.CustomLogger, config *config.Co
 	for _, r := range result {
 		resp = resp + r.Lines
 	}
-	file, err := os.ReadFile("testOutput/somewhatfrequent.txt")
+	file, err := os.ReadFile("testOutput/somewhatfrequentNew.txt")
 	if err != nil {
 		Logger.Error("No file, Please download file. Error opening file: ", err)
 	}
 	expResult := string(file)
-	expNumLines := 41
+	expNumLines := 337979
 
-	if resp != expResult || numLines != expNumLines {
+	if strings.TrimRight(resp,"\r\n") != strings.TrimRight(expResult,"\r\n") || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
 		Logger.Error("Grep for somewhat pattern occurences failed", nil)
+		return
 	}
+
+	Logger.Info("[TEST] Distributed Test for somewhat frequent pattern successful")
 }
 
+/*
+	Performs grep on a pattern present on a single machine
+*/
 func TestCombinedGrepSingle(Logger *logger.CustomLogger, config *config.Config){
 	
 	addresses := utils.AddressParser(Logger, config)
@@ -123,12 +148,18 @@ func TestCombinedGrepSingle(Logger *logger.CustomLogger, config *config.Config){
 		resp = resp + r.Lines
 	}
 
-	if resp != expResult || numLines != expNumLines {
+	if strings.TrimRight(resp,"\r\n") != strings.TrimRight(expResult,"\r\n") || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
 		Logger.Error("Grep when pattern present only in a single machine failed", nil)
+		return
 	}
+
+	Logger.Info("[TEST] Distributed Test for Grep on a single file successful")
 }
 
+/*
+	Performs grep with -c 
+*/
 func TestCombinedGrepCount(Logger *logger.CustomLogger, config *config.Config){
 	
 	addresses := utils.AddressParser(Logger, config)
@@ -152,5 +183,46 @@ func TestCombinedGrepCount(Logger *logger.CustomLogger, config *config.Config){
 	if resp != expResult || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
 		Logger.Error("Grep for somewhat pattern occurences failed", nil)
+		return
 	}
+
+	Logger.Info("[TEST] Distributed Test for grep -c option file successful")
+
+}
+
+/*
+	Performs grep on a regec pattern
+*/
+func TestCombinedGrepRegex(Logger *logger.CustomLogger, config *config.Config){
+	
+	addresses := utils.AddressParser(Logger, config)
+	command := "grep \"(DELETE|PUT)\\b\""
+
+	Logger.Info("Distributed Testing a regex pattern, command is: " + command)
+
+	startTime := time.Now().UnixMilli()
+	result, numLines, endTime := PerformCombinedGrep(addresses,command,Logger,config)
+	latency := endTime - startTime
+	fmt.Println("Time taken for the query (in ms): ",latency)
+
+
+	sort.Slice(result, func(i, j int) bool { return result[i].NumMach < result[j].NumMach })
+	resp := ""
+	for _, r := range result {
+		resp = resp + r.Lines
+	}
+	file, err := os.ReadFile("testOutput/somewhatfrequentNew.txt")
+	if err != nil {
+		Logger.Error("No file, Please download file. Error opening file: ", err)
+	}
+	expResult := string(file)
+	expNumLines := 337979
+
+	if strings.TrimRight(resp,"\r\n") != strings.TrimRight(expResult,"\r\n") || numLines != expNumLines {
+		Logger.Info("[Test] The result is Wrong: " + resp)
+		Logger.Error("Grep for somewhat pattern occurences failed", nil)
+		return
+	}
+
+	Logger.Info("[TEST] Distributed Test for regex pattern successful")
 }

@@ -3,9 +3,11 @@ package utils
 import (
 	"testing"
 	"mp1-server/logger"
-	// "mp1-server/config"
-	// "net"
 )
+
+/**
+	Unit tests for grep and running a bash command
+**/
 
 func TestGrepFileNew(t *testing.T){
 
@@ -48,35 +50,3 @@ func TestCommand(t *testing.T){
 		t.Errorf("Exec Command is not returning correct result")
 	}
 }
-
-//Deprecated: Since IPlookup for google.com, facebook.com is machine dependent, this doesn't make sense
-/*
-func TestAddressParser(t *testing.T){
-
-	var testAddresses []net.TCPAddr
-	googleAddr := &net.TCPAddr{
-		IP: net.ParseIP("172.217.2.46"),
-		Port: 4040,
-	}
-	facebookAddr := &net.TCPAddr{
-		IP: net.ParseIP("157.240.249.35"),
-		Port: 4040,
-	}
-	testAddresses = append(testAddresses,*googleAddr)
-	testAddresses = append(testAddresses,*facebookAddr)
-	
-	Logger := logger.NewLogger("debug")
-	config := &config.Config{
-		Port: "4040",
-		AddressPath: "testAddr.json",
-		TimeOut: 5,
-		LogPath: "log",
-	}
-
-	result := AddressParser(Logger, config)
-	if result[0].IP.String() != testAddresses[0].IP.String() || result[1].IP.String() != testAddresses[1].IP.String(){
-		Logger.Info("[Test] The result is Wrong: " + result[0].IP.String())
-		t.Errorf("AddressParser is not returning correct result")
-	}
-}
-*/

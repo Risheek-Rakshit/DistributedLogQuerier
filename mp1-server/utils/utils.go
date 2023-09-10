@@ -11,29 +11,50 @@ import (
 	"mp1-server/config"
 )
 
+/*
+	Stores the Machine name and port number (currently, always 4040)
+*/
 type MachineDetails struct {
 	MachineName string `json:"machine"`
 	PortNumber  int    `json:"port"`
 }
 
+/*
+	Mode enables running distributed tests on the program.
+	0 means DEFAULT mode: normal grep commands
+	1 means TEST mode: it asks users to perform tests
+*/
 type Mode int64
 const (
 	DEFAULT Mode = iota
 	TEST
 )
 
-
+/*
+	Payload is what server receives from the client as a request
+	Name is the filename to search onthat server
+	Pattern is the grep command
+*/
 type Payload struct {
 	Name    string
 	Pattern string
 }
 
+/*
+	Result is what server sends to the client as a response
+	Lines is the grep command's result
+	LineCount is the line count of the command, (in case of a -c, it is the absolute count)
+	NumMach is the machine number
+*/
 type Results struct {
 	Lines string
 	LineCount int
 	NumMach		int
 }
 
+/*
+	runs a bash command given by cmd
+*/
 func command(cmd string, logger *logger.CustomLogger) (string, error) {
 	output, err := exec.Command("bash","-c",cmd).Output()
 	strOutput, err2 := strconv.Atoi(string(output[:]))
@@ -45,6 +66,10 @@ func command(cmd string, logger *logger.CustomLogger) (string, error) {
 	return string(output[:]), nil
 }
 
+/*
+	[DEPRECATED]: use GrepFileNew. This assumes that pattern is not a grep command, and exhaustively performs -c and -n options.
+	Use GrepFileNew instead, which is more generic
+*/
 func GrepFile(filePath string, pattern string, logger *logger.CustomLogger) (string, int, error) {
 	cmdCount := "grep -c \"" + pattern + "\" " + filePath
 	cmdLines := "grep -n \"" + pattern + "\" " + filePath
@@ -72,7 +97,11 @@ func GrepFile(filePath string, pattern string, logger *logger.CustomLogger) (str
 	return result, numLines, nil
 }
 
-
+/*
+	performs grep command represented by cmd on the filePath.
+	This is a server side utils function
+	returns the grep result and number of lines
+*/
 func GrepFileNew(filePath string, cmd string, logger *logger.CustomLogger) (string, int, error) {
 	option := strings.Split(cmd, " ")[1]
 	
@@ -86,7 +115,8 @@ func GrepFileNew(filePath string, cmd string, logger *logger.CustomLogger) (stri
 
 	numLines := 0
 
-	if option == "-c" {
+	//Handle -c
+	if strings.Contains(option, "-") && strings.Contains(option, "c") {
 		numLines, err = strconv.Atoi(outputLines[:len(outputLines)-1])
 		if err !=nil {
 			logger.Error("Error while converting into integer",err)
@@ -103,6 +133,11 @@ func GrepFileNew(filePath string, cmd string, logger *logger.CustomLogger) (stri
 	return result, numLines, nil
 }
 
+/*
+	Performs an IPLookup on machine names present in the location as mentioned in the config file
+	This is a client side util function
+	returns a list of resolved TCPAddr
+*/
 func AddressParser(logger *logger.CustomLogger, config *config.Config) []net.TCPAddr {
 	var names []MachineDetails
 	var addresses []net.TCPAddr

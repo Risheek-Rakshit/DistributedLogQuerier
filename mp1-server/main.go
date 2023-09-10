@@ -13,6 +13,12 @@ import (
 	"mp1-server/config"
 )
 
+/*
+	conn: client-Server connection
+	logger: a custom logger
+
+	This is run as a gouroutine, it receives client requests, performs combined grep from all peers, and returns results on client
+*/
 func handleConnection(conn net.Conn, logger *logger.CustomLogger){
 
 	logger.Info("New client connection, serving request")
@@ -35,17 +41,16 @@ func handleConnection(conn net.Conn, logger *logger.CustomLogger){
 	}
 
 	payload := utils.Results{Lines: result, LineCount: num}
-	logger.Debug("Message writing")
+	logger.Debug("Message writing to client")
 	encoder.Encode(payload)
-	logger.Debug("Message written")
+	logger.Debug("Message written to client")
 	
 }
 
 
-
 func main(){
 	
-	//TODO: set log level from args
+	//Flag to set log level and testing
 	help := flag.Bool("h", false, "help")
 
 	logLevel := "info"
@@ -59,11 +64,14 @@ func main(){
 		return
 	}
 	
+	//declaring logger and configs
 	Logger := logger.NewLogger(logLevel)
 	config := config.NewConfig(Logger)
+
+
 	Logger.Info("Welcome to CS425 MP1, Using log level: "+logLevel)
 
-
+	//Launching Server in main thread
 	listner, err := net.Listen("tcp", "0.0.0.0:" + config.Port)
 	if err != nil {
 		Logger.Error("Error while starting server", err)
@@ -71,13 +79,14 @@ func main(){
 	}
 	Logger.Info("Server Started at Port: " + config.Port)
 
+	//Launch client subroutine as per the mode
 	if utils.Mode(mode) == utils.TEST {
 		go client.ClientImplNewTest(Logger, config)
 	} else {
 		go client.ClientImplNew(Logger, config)
 	}
 	
-
+	//Accept client connections
 	for {
 		conn, err := listner.Accept()
 		if err != nil {

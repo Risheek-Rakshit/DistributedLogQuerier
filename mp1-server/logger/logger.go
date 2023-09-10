@@ -2,6 +2,9 @@ package logger
 
 import (log "github.com/sirupsen/logrus")
 
+/*
+	A custom logger wrapper using sirupsen logrus open library. This is useful for program debugging
+*/
 type CustomLogger struct{
 	cLogger *log.Logger
 }
