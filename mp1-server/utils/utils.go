@@ -74,6 +74,8 @@ func GrepFile(filePath string, pattern string, logger *logger.CustomLogger) (str
 
 
 func GrepFileNew(filePath string, cmd string, logger *logger.CustomLogger) (string, int, error) {
+	option := strings.Split(cmd, " ")[1]
+	
 	cmdLines := cmd + " " + filePath
 
 	outputLines, err := command(cmdLines, logger)
@@ -82,9 +84,19 @@ func GrepFileNew(filePath string, cmd string, logger *logger.CustomLogger) (stri
 		return "",-1,err
 	}
 
-	lines := strings.Split(outputLines, "\n")
+	numLines := 0
 
-	numLines := len(lines) - 1
+	if option == "-c" {
+		numLines, err = strconv.Atoi(outputLines[:len(outputLines)-1])
+		if err !=nil {
+			logger.Error("Error while converting into integer",err)
+			return "",-1,err
+		}
+	} else {
+		lines := strings.Split(outputLines, "\n")
+		numLines = len(lines) - 1
+	}
+	
 
 	result := outputLines
 

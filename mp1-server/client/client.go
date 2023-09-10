@@ -29,15 +29,23 @@ func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.C
 		close(channel)
 	}()
 
-	endTime := time.Now().UnixMilli()
+	
 	totLine := 0
 	resp := ""
+	var respArr []utils.Results
 	for message := range channel {
-		fmt.Println("Message from server i: ",message.NumMach)
-		fmt.Println(message.Lines)
 		totLine += message.LineCount
 		resp = resp + message.Lines +"\n"
+		respArr = append(respArr,message)
 	}
+
+	endTime := time.Now().UnixMilli()
+
+	for _, message := range respArr {
+		fmt.Println("Message from server i: ",message.NumMach)
+		fmt.Println(message.Lines)
+	}
+
 	fmt.Println("Total Line matched:", totLine)
 
 	return resp, totLine, endTime
@@ -72,6 +80,7 @@ func ClientImplNew(logger *logger.CustomLogger,config *config.Config){
 }
 
 func connectionHandler(machNumber int, addr net.TCPAddr, wg *sync.WaitGroup, pattern string, ch chan utils.Results, logger *logger.CustomLogger, config *config.Config) {
+	machNumber 	= machNumber + 1
 	logFile := config.LogPath + "/machine." + strconv.Itoa(machNumber) + ".log"
 	logger.Info("Contacting machine:" + strconv.Itoa(machNumber))
 	address := addr.IP.String() + ":" + strconv.Itoa(addr.Port)
