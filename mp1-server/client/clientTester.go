@@ -211,7 +211,7 @@ func TestCombinedGrepRegex(Logger *logger.CustomLogger, config *config.Config){
 	for _, r := range result {
 		resp = resp + r.Lines
 	}
-	file, err := os.ReadFile("testOutput/somewhatfrequentNew.txt")
+	file, err := os.ReadFile("testOutput/regex.txt")
 	if err != nil {
 		Logger.Error("No file, Please download file. Error opening file: ", err)
 	}
