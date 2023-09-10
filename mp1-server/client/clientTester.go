@@ -1,7 +1,6 @@
 package client
 
 import (
-	"testing"
 	"time"
 	"fmt"
 	"os"
@@ -11,15 +10,8 @@ import (
 	"mp1-server/logger"
 )
 
-func TestCombinedGrepRare(t *testing.T){
+func TestCombinedGrepRare(Logger *logger.CustomLogger, config *config.Config){
 
-	Logger := logger.NewLogger("debug")
-	config := &config.Config{
-		Port: "4040",
-		AddressPath: "../addresses.json",
-		TimeOut: 5,
-		LogPath: "../log",
-	}
 	addresses := utils.AddressParser(Logger, config)
 	command := "grep \"Macintosh; U; Intel Mac OS X 10_5_7 rv:6.0; en-US\""
 
@@ -38,26 +30,20 @@ func TestCombinedGrepRare(t *testing.T){
 	}
 	file, err := os.ReadFile("testOutput/rare.txt")
 	if err != nil {
-		Logger.Error("Error opening file: ", err)
-		t.Errorf("No File, please download the file as per Readme")
+		Logger.Error("No file, Please download file. Error opening file: ", err)
+		return
 	}
 	expResult := string(file)
 	expNumLines := 41
 
 	if resp != expResult || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
-		t.Errorf("Grep for rare pattern occurences failed")
+		Logger.Error("Grep for rare pattern occurences failed",nil)
 	}
 }
 
-func TestCombinedGrepFrequent(t *testing.T){
-	Logger := logger.NewLogger("debug")
-	config := &config.Config{
-		Port: "4040",
-		AddressPath: "../addresses.json",
-		TimeOut: 5,
-		LogPath: "../log",
-	}
+func TestCombinedGrepFrequent(Logger *logger.CustomLogger, config *config.Config){
+	
 	addresses := utils.AddressParser(Logger, config)
 	command := "grep Safari"
 
@@ -76,27 +62,20 @@ func TestCombinedGrepFrequent(t *testing.T){
 	}
 	file, err := os.ReadFile("testOutput/frequent.txt")
 	if err != nil {
-		Logger.Error("Error opening file: ", err)
-		t.Errorf("No File, please download the file as per Readme")
+		Logger.Error("No file, Please download file. Error opening file: ", err)
+		return
 	}
 	expResult := string(file)
 	expNumLines := 1081851
 
 	if resp != expResult || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
-		t.Errorf("Grep for frequent pattern occurences failed")
+		Logger.Error("Grep for frequent pattern occurences failed", nil)
 	}
 }
 
-func TestCombinedGrepSomewhatFreq(t *testing.T){
+func TestCombinedGrepSomewhatFreq(Logger *logger.CustomLogger, config *config.Config){
 	
-	Logger := logger.NewLogger("debug")
-	config := &config.Config{
-		Port: "4040",
-		AddressPath: "../addresses.json",
-		TimeOut: 5,
-		LogPath: "../log",
-	}
 	addresses := utils.AddressParser(Logger, config)
 	command := "grep \"/app/main/posts HTTP/1.0\""
 
@@ -115,26 +94,19 @@ func TestCombinedGrepSomewhatFreq(t *testing.T){
 	}
 	file, err := os.ReadFile("testOutput/somewhatfrequent.txt")
 	if err != nil {
-		Logger.Error("Error opening file: ", err)
-		t.Errorf("No File, please download the file as per Readme")
+		Logger.Error("No file, Please download file. Error opening file: ", err)
 	}
 	expResult := string(file)
 	expNumLines := 41
 
 	if resp != expResult || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
-		t.Errorf("Grep for somewhat pattern occurences failed")
+		Logger.Error("Grep for somewhat pattern occurences failed", nil)
 	}
 }
 
-func TestCombinedGrepSingle(t *testing.T){
-	Logger := logger.NewLogger("debug")
-	config := &config.Config{
-		Port: "4040",
-		AddressPath: "../addresses.json",
-		TimeOut: 5,
-		LogPath: "../log",
-	}
+func TestCombinedGrepSingle(Logger *logger.CustomLogger, config *config.Config){
+	
 	addresses := utils.AddressParser(Logger, config)
 	command := "grep 180.34.166.169"
 
@@ -153,18 +125,12 @@ func TestCombinedGrepSingle(t *testing.T){
 
 	if resp != expResult || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
-		t.Errorf("Grep when pattern present only in a single machine failed")
+		Logger.Error("Grep when pattern present only in a single machine failed", nil)
 	}
 }
 
-func TestCombinedGrepCount(t *testing.T){
-	Logger := logger.NewLogger("debug")
-	config := &config.Config{
-		Port: "4040",
-		AddressPath: "../addresses.json",
-		TimeOut: 5,
-		LogPath: "../log",
-	}
+func TestCombinedGrepCount(Logger *logger.CustomLogger, config *config.Config){
+	
 	addresses := utils.AddressParser(Logger, config)
 	command := "grep -c DELETE"
 
@@ -185,6 +151,6 @@ func TestCombinedGrepCount(t *testing.T){
 
 	if resp != expResult || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
-		t.Errorf("Grep for somewhat pattern occurences failed")
+		Logger.Error("Grep for somewhat pattern occurences failed", nil)
 	}
 }

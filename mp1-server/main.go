@@ -49,6 +49,8 @@ func main(){
 	help := flag.Bool("h", false, "help")
 
 	logLevel := "info"
+	mode := 0
+	flag.IntVar(&mode, "mode", 0, "sets the mode to use: 0 is default mode, 1 is testing mode, where optionally all distributed tests can be performed")
 	flag.StringVar(&logLevel, "loglev", "info", "Set log level: can be debug, info, error. Any other value returns info, set to info by default")
 	flag.Parse()
 
@@ -69,7 +71,12 @@ func main(){
 	}
 	Logger.Info("Server Started at Port: " + config.Port)
 
-	go client.ClientImplNew(Logger, config)
+	if utils.Mode(mode) == utils.TEST {
+		go client.ClientImplNewTest(Logger, config)
+	} else {
+		go client.ClientImplNew(Logger, config)
+	}
+	
 
 	for {
 		conn, err := listner.Accept()

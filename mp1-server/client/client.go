@@ -51,6 +51,44 @@ func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.C
 	return respArr, totLine, endTime
 }
 
+func ClientImplNewTest(logger *logger.CustomLogger,config *config.Config){
+	for {
+		
+		fmt.Println("Enter your grep command, or Test option(0-4) [Refer to the README about what each test option performs]:")
+		scanner := bufio.NewScanner(os.Stdin)
+		line := ""
+		if scanner.Scan() {
+    		line = scanner.Text()
+		}
+		
+		switch line {
+		case "0":
+			TestCombinedGrepRare(logger, config)
+		case "1":
+			TestCombinedGrepFrequent(logger, config)
+		case "2":
+			TestCombinedGrepSomewhatFreq(logger, config)
+		case "3":
+			TestCombinedGrepSingle(logger, config)
+		case "4":
+			TestCombinedGrepCount(logger, config)
+		default:
+			startTime := time.Now().UnixMilli()
+			addresses := utils.AddressParser(logger, config)
+
+			for _, address := range addresses {
+				logger.Debug(string(address.IP))
+				logger.Debug(strconv.Itoa(address.Port))
+			}
+		
+			_,_, endTime := PerformCombinedGrep(addresses, line, logger, config)
+
+			latency := endTime - startTime
+			fmt.Println("Time taken for the query (in ms): ",latency)
+		}
+	}
+}
+
 func ClientImplNew(logger *logger.CustomLogger,config *config.Config){
 	for {
 		
