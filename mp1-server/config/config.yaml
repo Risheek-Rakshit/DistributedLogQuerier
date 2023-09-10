@@ -1,4 +1,4 @@
 port: 4040
 addresspath: addresses.json
-timeout: 5
+timeout: 30
 logpath: log

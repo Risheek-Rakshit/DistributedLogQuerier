@@ -49,20 +49,17 @@ func main(){
 	help := flag.Bool("h", false, "help")
 
 	logLevel := "info"
-	mode := 0
-	flag.StringVar(&logLevel,"loglev","info","Set log level: can be debug, info, error. Any other value returns info, set to info by default")
-	flag.IntVar(&mode, "mode", 0, "sets the mode to use: 0 is default mode, 1 is testing mode, where all tests are performed first")
+	flag.StringVar(&logLevel, "loglev", "info", "Set log level: can be debug, info, error. Any other value returns info, set to info by default")
 	flag.Parse()
 
 	if *help {
 		flag.Usage()
 		return
 	}
-
 	
 	Logger := logger.NewLogger(logLevel)
 	config := config.NewConfig(Logger)
-	Logger.Info("Welcome to CS425 MP1: "+logLevel)
+	Logger.Info("Welcome to CS425 MP1, Using log level: "+logLevel)
 
 
 	listner, err := net.Listen("tcp", "0.0.0.0:" + config.Port)
@@ -72,14 +69,14 @@ func main(){
 	}
 	Logger.Info("Server Started at Port: " + config.Port)
 
-	go client.ClientImplNew(Logger,config)
+	go client.ClientImplNew(Logger, config)
 
 	for {
 		conn, err := listner.Accept()
 		if err != nil {
-			fmt.Println("Error while accepting listers",err)
+			fmt.Println("Error while accepting listers", err)
 		}
-		go handleConnection(conn,Logger)
+		go handleConnection(conn, Logger)
 	}
 
 }

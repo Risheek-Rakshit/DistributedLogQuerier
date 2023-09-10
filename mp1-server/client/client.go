@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.CustomLogger,config *config.Config) (string, int, int64){
+func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.CustomLogger,config *config.Config) ([]utils.Results, int, int64){
 		
 	var wg sync.WaitGroup
 	wg.Add(len(addresses))
@@ -48,7 +48,7 @@ func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.C
 
 	fmt.Println("Total Line matched:", totLine)
 
-	return resp, totLine, endTime
+	return respArr, totLine, endTime
 }
 
 func ClientImplNew(logger *logger.CustomLogger,config *config.Config){

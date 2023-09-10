@@ -3,8 +3,8 @@ package utils
 import (
 	"testing"
 	"mp1-server/logger"
-	"mp1-server/config"
-	"net"
+	// "mp1-server/config"
+	// "net"
 )
 
 func TestGrepFileNew(t *testing.T){
@@ -13,6 +13,7 @@ func TestGrepFileNew(t *testing.T){
 	testCommand := "grep it"
 
 	Logger := logger.NewLogger("debug")
+	Logger.Info("Unit testing simple grep on a test.log file")
 	result, numLines, err := GrepFileNew(testFileName,testCommand, Logger)
 	if err!= nil {
 		Logger.Error("[Test] Some error while unit test grep", err)
@@ -48,9 +49,10 @@ func TestCommand(t *testing.T){
 	}
 }
 
+//Deprecated: Since IPlookup for google.com, facebook.com is machine dependent, this doesn't make sense
+/*
 func TestAddressParser(t *testing.T){
 
-	//TODO: replace with google.com and facebook.com lookup addresses as per VMs
 	var testAddresses []net.TCPAddr
 	googleAddr := &net.TCPAddr{
 		IP: net.ParseIP("172.217.2.46"),
@@ -77,3 +79,4 @@ func TestAddressParser(t *testing.T){
 		t.Errorf("AddressParser is not returning correct result")
 	}
 }
+*/
