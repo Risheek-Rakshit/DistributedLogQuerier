@@ -45,27 +45,38 @@ go build
 grep <option> <pattern or regEx>
 ```
 
-* When run in the test mode, mention the category type to grep a specific predefined command for each of the following category. Look at the Testing section for more details.
-```bash
-0 : Rare pattern
-1 : Frequent pattern
-2 : Somewhat Frequent pattern
-3 : Pattern found only in one machine
-4 : Only the count of the lines matched in each file
-5 : Regular Expression 
-```
+* Refer to the Testing section to see how to use the testing mode
+
 
 ## Testing
-* We have unit tests for grep and go-exec in utils package. To run them:
+* We have standard go unit tests for grep and go-exec in utils package. To run them:
 ```bash
 cd utils
 go test
 ```
-This will run unit tests for utils
-* We have test mode for distributed testing, This assumes all 10 machines are up. We are using the provided Demo logs. Before running in test mode please download the expected outputs from the given drive link and place the folder 'testOuput' inside the client directory for proper results.
+This will run unit tests for utils, regardless of the network being up.
+
+* We have the test mode (mode 1) for distributed testing, This assumes all 10 machines are up initially. We are using the provided Demo logs. Before running in test mode please download the expected outputs from the given drive link and place the folder 'testOuput' inside the client directory for proper results.
 ```bash
 https://drive.google.com/drive/folders/1mk_2KE3NFMRh3sHG_Trzw48-H192q0c2?usp=sharing
 ```
+* After the above step, perform distributed tests, run the program like this (mode 1):
+```bash
+./mp1-server -loglev=debug -mode=1
+```
+* You will be propted by the program to enter a number between 0-6. They correspond to the following grep specific predefined command. Type in the number for test to perform.
+```bash
+0 : grep on Rare pattern
+1 : grep on Frequent pattern
+2 : grep on Somewhat Frequent pattern
+3 : grep on Pattern found only in one machine
+4 : grep to see working of -c: the count of the lines matched
+5 : grep to see working of -E: regEx
+6 : grep when machine 10 fails (Note: you must kill machine 10's process manually to pass this test)
+```
+
+Note: Distributed tests categories 0-5 assume logs are coming from all 10 machines, whereas category 6 assumes machine 10 is down. You must kill the process on machine 10 for this test to be successful.
+
 
 ## Report
 Please refer to mp1-report.pdf for further insights into design and performance.
