@@ -35,9 +35,10 @@ https://gitlab.engr.illinois.edu/sl203/mp1-cs425-group58.git
 ```
 * Build the project
 ```bash
+cd mp1-server
 go build
 ```
-* Run the program in the required mode. 0 represents default mode and 1 represents test mode. 
+* Run the program in the required mode in mp1-server directory. 0 represents default mode and 1 represents test mode. loglev can be info, debug or error. by default, loglev is info, and mode is 0
 ```bash
 ./mp1-server -loglev=<LogLevel> -mode=<0 or 1>
 ```
@@ -62,29 +63,6 @@ This will run unit tests for utils
 ```bash
 https://drive.google.com/drive/folders/1mk_2KE3NFMRh3sHG_Trzw48-H192q0c2?usp=sharing
 ```
-## Installation
-* Install Golang version 1.19
-* Clone the repository
-```bash
-https://gitlab.engr.illinois.edu/sl203/mp1-cs425-group58.git
-```
-* Build the project
-```bash
-go build
-```
-* Run the program in the required mode. 0 represents default mode and 1 represents test mode. 
-```bash
-./mp1-server -loglev=<LogLevel> -mode=<0 or 1>
-```
-* When run in the test mode, mention the category type to grep a specific predefined command for each of the following category.
-```bash
-0 : Rare pattern
-1 : Frequent pattern
-2 : Somewhat Frequent pattern
-3 : Pattern found only in one machine
-4 : Only the count of the lines matched in each file
-5 : Regular Expression 
-```
-* Before running in test mode please unzip the test.zip file and place the folder 'testOuput' inside the client folder for proper results.
+
 ## Report
-Please refer to < > for further insights into design and performance.
+Please refer to mp1-report.pdf for further insights into design and performance.
