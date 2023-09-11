@@ -66,11 +66,12 @@ func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.C
 	3: Grep on a pattern present on only 1 machine
 	4: Grep with -c option
 	5: Grep on a regex
+	6: Grep when machine 10 fails
 */
 func ClientImplNewTest(logger *logger.CustomLogger,config *config.Config){
 	for {
 		
-		fmt.Println("Enter your grep command, or Test option(0-5) [Refer to the README about what each test option performs]:")
+		fmt.Println("Enter your grep command, or Test option(0-6) [Refer to the README about what each test option performs]:")
 		scanner := bufio.NewScanner(os.Stdin)
 		line := ""
 		if scanner.Scan() {
@@ -90,6 +91,8 @@ func ClientImplNewTest(logger *logger.CustomLogger,config *config.Config){
 			TestCombinedGrepCount(logger, config)
 		case "5":
 			TestCombinedGrepRegex(logger, config)
+		case "6":
+			TestCombinedGrepFT(logger, config)
 		default:
 			startTime := time.Now().UnixMilli()
 			addresses := utils.AddressParser(logger, config)

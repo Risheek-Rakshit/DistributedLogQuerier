@@ -182,7 +182,7 @@ func TestCombinedGrepCount(Logger *logger.CustomLogger, config *config.Config){
 
 	if resp != expResult || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
-		Logger.Error("Grep for somewhat pattern occurences failed", nil)
+		Logger.Error("Grep for -c failed", nil)
 		return
 	}
 
@@ -220,9 +220,46 @@ func TestCombinedGrepRegex(Logger *logger.CustomLogger, config *config.Config){
 
 	if strings.TrimRight(resp,"\r\n") != strings.TrimRight(expResult,"\r\n") || numLines != expNumLines {
 		Logger.Info("[Test] The result is Wrong: " + resp)
-		Logger.Error("Grep for somewhat pattern occurences failed", nil)
+		Logger.Error("Grep for regex pattern occurences failed", nil)
 		return
 	}
 
 	Logger.Info("[TEST] Distributed Test for regex pattern successful")
+}
+
+/*
+	Performs grep to check fault tolerance. Assumes machine 10 dies before this test is performed
+*/
+func TestCombinedGrepFT(Logger *logger.CustomLogger, config *config.Config){
+	
+	addresses := utils.AddressParser(Logger, config)
+	command := "grep \"Macintosh; U; Intel Mac OS X 10_5_7 rv:6.0; en-US\""
+
+	Logger.Info("Distributed Testing a pattern with fault tolerance, command is: " + command)
+
+	startTime := time.Now().UnixMilli()
+	result, numLines, endTime := PerformCombinedGrep(addresses,command,Logger,config)
+	latency := endTime - startTime
+	fmt.Println("Time taken for the query (in ms): ",latency)
+
+
+	sort.Slice(result, func(i, j int) bool { return result[i].NumMach < result[j].NumMach })
+	resp := ""
+	for _, r := range result {
+		resp = resp + r.Lines
+	}
+	file, err := os.ReadFile("client/testOutput/ft.txt")
+	if err != nil {
+		Logger.Error("No file, Please download file. Error opening file: ", err)
+	}
+	expResult := string(file)
+	expNumLines := 38
+
+	if strings.TrimRight(resp,"\r\n") != strings.TrimRight(expResult,"\r\n") || numLines != expNumLines {
+		Logger.Info("[Test] The result is Wrong: " + resp)
+		Logger.Error("Grep for fault tolerance failed", nil)
+		return
+	}
+
+	Logger.Info("[TEST] Distributed Test for pattern with fault tolerance (machine 10 down) successful")
 }
