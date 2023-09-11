@@ -40,7 +40,7 @@ go build
 ./mp1-server -loglev=<LogLevel> -mode=<0 or 1>
 ```
 
-* Use any of the active machines to enter the command. The command must be of the form.
+* The above will launch the program which waits for a user input (will work on every machine it is launched). Type in your grep query command. The command must be of the form.
 ```bash
 grep <option> <pattern or regEx>
 ```
