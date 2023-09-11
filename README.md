@@ -16,18 +16,15 @@ log/machine.[i].log
 * You can also use your custom json file, but ensure that the content is of similar types. Update the config.yaml file to point to the desired file.
 ```bash
 Constants to be defined in config.yaml file
-port : The default port servers
+port : The default port servers (currently 4040)
 addresspath: The JSON file containing the machine names
 timeout: The time for which the client waits for response from server
 logpath: The directory that contains the machine logs.
 ```
-* Run the program 'main.go' in all the systems. The program invokes the client and server implementations on the machines it is run.
-* The client implementation of the program waits for the input from the user. Use any of the active machines to enter the command. The command must be of the form
-```bash
-grep <option> <pattern or regEx>
-```
+* The program invokes the client and server implementations on the machines it is run.
+* The client implementation of the program waits for the input from the user. 
 
-## Installation
+## Installation and Running
 * Install Golang version 1.19
 * Clone the repository
 ```bash
@@ -42,6 +39,12 @@ go build
 ```bash
 ./mp1-server -loglev=<LogLevel> -mode=<0 or 1>
 ```
+
+* Use any of the active machines to enter the command. The command must be of the form.
+```bash
+grep <option> <pattern or regEx>
+```
+
 * When run in the test mode, mention the category type to grep a specific predefined command for each of the following category. Look at the Testing section for more details.
 ```bash
 0 : Rare pattern
