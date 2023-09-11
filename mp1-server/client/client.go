@@ -47,11 +47,16 @@ func PerformCombinedGrep(addresses []net.TCPAddr, input string, logger *logger.C
 	endTime := time.Now().UnixMilli()
 
 	for _, message := range respArr {
-		fmt.Println("Message from server i: ",message.NumMach)
+		fmt.Println("Message from machine: ",message.NumMach)
 		fmt.Println(message.Lines)
 	}
 
-	fmt.Println("Total Line matched:", totLine)
+	for _, message := range respArr {
+		fmt.Println("Machine number - ", message.NumMach)
+		fmt.Println("Number of lines matched: ", message.LineCount)
+	}
+
+	fmt.Println("Total lines matched:", totLine)
 
 	return respArr, totLine, endTime
 }
