@@ -9,7 +9,7 @@ import (
 /*
 	Port: port on which server process runs
 	AddressPath: filename and path of the membership list file
-	TimeOut: time the server thread waits for the client thread to send a request
+	TimeOut: time the client thread waits for the server thread to send a response
 	LogPath: path of the log files
 */
 type Config struct{
