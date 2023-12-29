@@ -1,6 +1,6 @@
-# CS425 - MP1 - Group 58
+# Distributed Log Querier
 
-The MP1 focuses on developing a log querier which allows the user to execute grep commands on multiple machines in parallel.
+The project focuses on developing a log querier which allows the user to execute grep commands on multiple machines in parallel.
 
 
 ## Overview
