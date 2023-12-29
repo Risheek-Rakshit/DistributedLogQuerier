@@ -79,4 +79,4 @@ Note: Distributed tests categories 0-5 assume logs are coming from all 10 machin
 
 
 ## Report
-Please refer to mp1-report.pdf for further insights into design and performance.
+Please refer to LogQuerier.pdf for further insights into design and performance.
